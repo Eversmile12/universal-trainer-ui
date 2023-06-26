@@ -17,6 +17,7 @@ const UrlTrainer = () => {
   const [urls, setUrls] = useState<UrlData[]>([]);
   const [inputUrl, setInputUrl] = useState("");
   const [maxPages, setMaxPages] = useState<number>(10);
+  const [singlePage, setSinglePage] = useState<boolean>(false); // New state for the checkbox
 
   const calculateElapsedTime = (startTime: number) => {
     const elapsedTime = Date.now() - startTime;
@@ -72,8 +73,7 @@ const UrlTrainer = () => {
                 ...prevState,
                 {
                   url: trimmedUrl,
-                  maxPages: maxPages,
-
+                  maxPages: singlePage ? 1 : maxPages,
                   completed: false,
                 },
               ];
@@ -111,7 +111,7 @@ const UrlTrainer = () => {
             ...prevState,
             {
               url: trimmedUrl,
-              maxPages: maxPages,
+              maxPages: singlePage ? 1 : maxPages,
               completed: false,
             },
           ];
@@ -284,6 +284,7 @@ const UrlTrainer = () => {
           min={1}
           max={1500}
           value={maxPages}
+          disabled={singlePage}
           onChange={handleNumberChange}
           className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline w-full"
         />
@@ -294,7 +295,17 @@ const UrlTrainer = () => {
           +
         </button>
       </div>
-
+      <div className="p-6 w-2/6 mx-auto bg-white rounded-xl shadow-md flex items-center space-x-4">
+        <label className="flex items-center">
+          <input
+            type="checkbox"
+            checked={singlePage}
+            onChange={() => setSinglePage(!singlePage)}
+            className="form-checkbox h-5 w-5 text-blue-500"
+          />
+          <span className="ml-2">Single Page</span>
+        </label>
+      </div>
       <div className="w-2/6 mx-auto mt-4 flex gap-2 justify-center flex-wrap ">
         {urls.map((data, index) => (
           <div
@@ -339,7 +350,6 @@ const UrlTrainer = () => {
           </div>
         ))}
       </div>
-
       <button
         onClick={trainUrls}
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
